@@ -1,11 +1,12 @@
 require_relative 'lib/secret-sequence'
+require 'colorize'
 
 def mastermind
   secret = Secret.new
-  puts "---Welcome to MASTERMIND---"
-  puts "---We'll play a game were you have to guess my secret sequence!---"
-  puts "---I'll pick FOUR of the available colors and make a SECRET SEQUENCE!---"
-  puts "---Let's start the GAME!---"
+  puts "                      Welcome to MASTERMIND                         ".black.on_green
+  puts "--- We'll play a game were you have to guess my secret sequence! ---".black.on_green
+  puts "---        I'll pick 4 colors and make a SECRET SEQUENCE!        ---".black.on_green
+  puts "---                   Let's start the GAME!                      ---".black.on_green
   puts "-> How many tentatives you would like to have? (max is 10)"
   max_tentatives = gets.chomp.to_i
   if max_tentatives == 0
@@ -17,7 +18,7 @@ def mastermind
     max_tentatives = 10
     puts "\n"
   else
-    puts "You choose #{max_tentatives} tentatives! Goodluck!"
+    puts "You choose #{max_tentatives.to_s.green} tentatives! Goodluck!"
     max_tentatives = max_tentatives
     puts "\n"
   end
@@ -27,21 +28,24 @@ def mastermind
   feedback_guess = 0
   while tentatives < max_tentatives
     puts "----- Type a sequence of colors, separated by a space: -----"
-    puts "--- The available colors are: #{secret.get_colors.join(', ')}! ---"
-    puts "You have #{max_tentatives - tentatives} remaining tentatives, be careful!"
+    puts "--- The available colors are: #{secret.get_colors.join(', ').on_light_black}! ---"
+    puts "You have #{(max_tentatives - tentatives).to_s.red} remaining tentatives, be careful!"
     puts "\n"
-    guess = gets.chomp
+    guess = gets.chomp.downcase
     player_guess = ""
     feedback_guess = 0
     color_right_place = 0
     player_guess << guess
     tentatives += 1
+    # p secret.get_sequence
      array_guess = player_guess.split(" ")
     if array_guess == secret.get_sequence
-      puts "YOU GOT IT RIGHT!"
+      puts "*******  CONGRATULATIONS!!! YOU GOT IT!!!  *******".on_green
+      puts "My secret sequence was: #{secret.get_sequence.join(', ').light_green}"
       break
     elsif tentatives == max_tentatives
-      puts "Too bad! you didn't get it in this amount of tentatives, good luck next time!"
+      puts "Too bad! You didn't get it :( Good luck next time!".on_red
+      puts "My secret sequence was: #{secret.get_sequence.join(', ').light_green}!"
       break
     elsif array_guess.each_with_index do |color, index|
       if secret.get_sequence.include?(color)
@@ -54,10 +58,10 @@ def mastermind
     end
     puts "_____________________________________________________________"
     puts "\n"
-    puts "-> You got #{feedback_guess} colors right and #{color_right_place} colors in the right spot!"
-    puts "-> Remember, the available colors are: #{secret.get_colors.join(', ')}!"
+    puts "-> You got #{feedback_guess.to_s.yellow.underline + " colors".yellow} right and #{color_right_place.to_s.green.underline + " colors".green} in the right spot!"
+    # puts "-> Remember, the available colors are: #{secret.get_colors.join(', ').upcase.green.on_red}!"
     puts "_____________________________________________________________"
-    puts "\n"
+    puts "\n" 
   end
 
 end
